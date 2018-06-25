@@ -4,4 +4,4 @@ venv
 .env
 *.pyc
 *.pyo
-
+.ideia
