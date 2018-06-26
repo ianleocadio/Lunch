@@ -23,8 +23,10 @@
                         {% for d in m.day_set.all %}
                             <div class="col-xs-6 col-sm-4 col-md-2">
                                 <div class="card text-center">
+                                    <div class="card-header">
+                                        <h5 class="">{{ d }}</h5>
+                                    </div>
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ d }}</h5>
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
                                             R$: {{ d.spent }}
                                         </button>
@@ -40,8 +42,10 @@
                         {% for d in m.day_set.all %}
                             <div class="col-xs-6 col-sm-4 col-md-2">
                                 <div class="card text-center">
+                                    <div class="card-header">
+                                        <h5 class="">{{ d }}</h5>
+                                    </div>
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ d }}</h5>
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
                                             R$: {{ d.spent }}
                                         </button>
@@ -61,17 +65,18 @@
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h2 class="modal-title text-center" id="">{{ m }}</h2><br>
+                    <h2 class="modal-title text-center" id="">Dia {{ d.day }} de {{ m }}</h2><br>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
                     <div class="modal-body">
-                        <h4>Dia: {{ d.day }}</h4>
+
                       <form>
+                          {% csrf_token %}
                           <div class="form-group">
-                              <label for="spent">Spent:</label>
-                              <input class="input" type="number"/>
+                              <label for="#{{ form.spent.id_for_label }}">Gasto</label>
+                              {{ form.spent }}
                           </div>
                       </form>
                   </div>
