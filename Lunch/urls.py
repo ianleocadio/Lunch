@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from app.views import YearList, MonthView
 
 urlpatterns = [
+    path('', YearList.as_view(), name="calendar"),
+    path('month/<int:year>/<int:month>', MonthView.as_view(), name="month"),
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS
     path('admin/', admin.site.urls),
 ]

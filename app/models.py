@@ -1,6 +1,8 @@
 from django.db import models
 import uuid
-from django.db.models import Sum, F, FloatField, Max
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db.models import Sum, F, FloatField
 
 # Create your models here.
 
@@ -12,17 +14,20 @@ class Day(models.Model):
         choices=DAYS,
         default=1,
     )
-    month = models.ForeignKey("Month", on_delete=models.PROTECT)
+    month = models.ForeignKey("Month", on_delete=models.CASCADE)
     spent = models.FloatField(default=0.0)
     def __str__(self):
         return str(self.day)
-    
+
+    @property
+    def year(self):
+        return self.month.year
 
 
 
 class Month(models.Model):
     month = models.IntegerField()
-    year = models.ForeignKey("Year", null=False, blank=False, on_delete=models.PROTECT)
+    year = models.ForeignKey("Year", null=False, blank=False, on_delete=models.CASCADE)
 
     def __str__(self):
         if self.month == 1:
@@ -50,14 +55,14 @@ class Month(models.Model):
         if self.month == 12:
             return "Dezembro"
 
-    def calcula_total_lunch(self):
+    def total_month(self):
         tot = self.day_set.all().aggregate(
             tot_ped=Sum(F('spent'), output_field=FloatField())
         )['tot_ped'] or 0
-        return tot
-    calcula_total_lunch.short_description = "Total Spent"
+        return "R$: "+str(tot)
+    total_month.short_description = "Total Spent"
 
-    totalLunch = property(calcula_total_lunch)
+    totalLunch = property(total_month)
 
 class Year(models.Model):
     year = models.IntegerField()
@@ -65,6 +70,32 @@ class Year(models.Model):
     def __str__(self):
         return str(self.year)
 
-    @property
-    def months(self):
-        return self.month_set.all()
+    def total_year(self):
+        tot = self.month_set.all().aggregate(
+            tot_ped=Sum(F("day__spent"), output_field=FloatField())
+        )['tot_ped'] or 0
+        return "R$: "+str(tot)
+
+    total_year.short_description = "Total Spent"
+    totalLunch = property(total_year)
+
+
+
+@receiver(post_save, sender=Month)
+def set_all_days_in_month(sender, instance:Month, **kwargs):
+    list = []
+    for i in range(31):
+        list.append(Day(day=(i+1,i+1), month=instance))
+
+    instance.day_set.bulk_create(list)
+
+@receiver(post_save, sender=Year)
+def set_all_months_in_year(sender, instance:Year, **kwargs):
+    list = (Month(month=i+1, year=instance) for i in range(12))
+    instance.month_set.bulk_create(list)
+    list = instance.month_set.all()
+    for m in list:
+        m.day_set.bulk_create((Day(day=i+1, month=m) for i in range(31)))
+
+
+
