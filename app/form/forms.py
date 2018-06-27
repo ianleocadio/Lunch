@@ -4,8 +4,8 @@ from .utils.ajax import DayAjaxableResponseMixin
 
 class DayForm(forms.Form):
     spent = forms.DecimalField(label="Spent",
-                             widget=forms.NumberInput(attrs={'class': 'form-control form-control-lg'}),
-                             max_digits=5,
+                             widget=forms.TextInput(attrs={'class': 'form-control form-control-lg'}),
+                             max_digits=7,
                              decimal_places=2)
 
 class DayFormView(DayAjaxableResponseMixin, FormView):

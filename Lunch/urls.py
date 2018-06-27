@@ -22,6 +22,7 @@ urlpatterns = [
     path('months_by_year/', YearList.as_view(), name="calendar"),
     path('days_by_month/<int:year>/<int:month>', MonthView.as_view(), name="month"),
     path('days_by_month/save/<int:year>/<int:month>/<int:day>', MonthView.as_view(), name="monthSave"),
+    path('days_by_month/validate/<int:year>/<int:month>/<int:day>', MonthView.as_view(), name="validate_saldo"),
     #path('day/save/<int:year>/<int:month>/<int:day>', ),
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS
     path('admin/', admin.site.urls),

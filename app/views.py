@@ -29,8 +29,11 @@ class MonthView(DayFormView, ListView):
         list = Month.objects.filter(year__year=year)
         return list
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self,*,object_list=None,  **kwargs):
+        if not hasattr(self, "object_list"):
+            self.object_list = self.model.objects.filter(year__year=self.kwargs['year'])
+
+        context = super().get_context_data(object_list=self.object_list,**kwargs)
         context["activeMonth"] = datetime.datetime.now().month
         context["activeYear"] = datetime.datetime.now().year
         if "month" in self.kwargs:
@@ -39,5 +42,7 @@ class MonthView(DayFormView, ListView):
             context["activeYear"] = self.kwargs['year']
         #context['form'] = DayForm()
         return context
+
+
 
 

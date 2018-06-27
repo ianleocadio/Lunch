@@ -27,13 +27,36 @@ class AjaxableResponseMixin:
             return response
 
 
-class DayAjaxableResponseMixin(AjaxableResponseMixin):
+class DayAjaxableResponseMixin:
+
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        if self.request.is_ajax():
+            data = {
+                "errors": form.errors,
+                "validate": False
+            }
+            return JsonResponse(data, status=400)
+        else:
+            return response
+
     def form_valid(self, form):
         response = super().form_valid(form)
-        day = self.kwargs["day"]
-        month = self.kwargs["month"]
-        year = self.kwargs["year"]
-        dayObject = Day.objects.get(day=day,month__month=month, month__year__year=year)
-        dayObject.spent = form.data['spent']
-        dayObject.save()
-        return response
+
+        if self.request.is_ajax():
+            data = {
+                "validate" : True
+            }
+            if int(form.data["spent"]) > 300:
+                data["validate"] = False
+            print(response)
+
+            return JsonResponse(data=data, )
+        else:
+            day = self.kwargs["day"]
+            month = self.kwargs["month"]
+            year = self.kwargs["year"]
+            dayObject = Day.objects.get(day=day,month__month=month, month__year__year=year)
+            dayObject.spent = form.data['spent']
+            dayObject.save()
+            return response
