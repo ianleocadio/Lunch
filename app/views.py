@@ -13,8 +13,9 @@ class YearList(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        now = datetime.datetime.now()
-        context['currentYear'] = now.year
+        context["activeMonth"] = datetime.datetime.now().month
+        context["activeYear"] = datetime.datetime.now().year
+        context["activeDay"] = datetime.datetime.now().day
         return context
 
 class MonthView(DayFormView, ListView):
@@ -36,6 +37,7 @@ class MonthView(DayFormView, ListView):
         context = super().get_context_data(object_list=self.object_list,**kwargs)
         context["activeMonth"] = datetime.datetime.now().month
         context["activeYear"] = datetime.datetime.now().year
+        context["activeDay"] = datetime.datetime.now().day
         if "month" in self.kwargs:
             context["activeMonth"] = self.kwargs["month"]
         if "year" in self.kwargs:

@@ -27,7 +27,11 @@
                     <div class="row">
                         {% for d in m.day_set.all %}
                             <div class="col-xs-6 col-sm-4 col-md-2">
-                                <div class="card text-center">
+                                {% if activeDay == d.day %}
+                                    <div class="card border-info text-center">
+                                {% else %}
+                                    <div class="card text-center">
+                                {% endif %}
                                     <div class="card-header">
                                         <h5 class="">{{ d.day|ordinal }}</h5>
                                     </div>
@@ -46,12 +50,16 @@
                     <div class="row">
                         {% for d in m.day_set.all %}
                             <div class="col-xs-6 col-sm-4 col-md-2">
-                                <div class="card text-center">
+                                {% if activeDay == d.day %}
+                                    <div class="card border-info text-center">
+                                {% else %}
+                                    <div class="card text-center">
+                                {% endif %}
                                     <div class="card-header">
                                         <h5 class="">{{ d.day|ordinal }}</h5>
                                     </div>
                                     <div class="card-body">
-                                        <button type="button" ty class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
+                                        <button type="button"  class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
                                             R$: {{ d.spent|intcomma }}
                                         </button>
                                     </div>
