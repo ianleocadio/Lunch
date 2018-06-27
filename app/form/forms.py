@@ -1,9 +1,13 @@
 from django import forms
-from .utils.ajax import AjaxableResponseMixin
+from django.views.generic import FormView
+from .utils.ajax import DayAjaxableResponseMixin
 
+class DayForm(forms.Form):
+    spent = forms.DecimalField(label="Spent",
+                             widget=forms.NumberInput(attrs={'class': 'form-control form-control-lg'}),
+                             max_digits=5,
+                             decimal_places=2)
 
-class DayForm(AjaxableResponseMixin, forms.Form):
-    spent = forms.FloatField(label="Gasto", widget=forms.NumberInput(attrs={'class': 'form-control form-control-lg'}))
-    day = forms.HiddenInput()
-    month = forms.HiddenInput()
-    year = forms.HiddenInput()
+class DayFormView(DayAjaxableResponseMixin, FormView):
+    form_class = DayForm
+    success_url = "/"

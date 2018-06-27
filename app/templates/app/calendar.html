@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load humanize %}
 
 {% block title %} Calendar {% endblock %}
 
@@ -8,7 +8,7 @@
 <div class="container">
     <nav class="nav nav-tabs" id="YearTab" role="tablist">
         {% for y in object_list %}
-            {% if forloop.first %}
+            {% if y.year == currentYear %}
                 <a class="nav-item nav-link active" id="nav-{{ y }}-tab" data-toggle="pill" href="#nav-{{ y }}" role="tab" aria-controls="vnav-{{ y }}" aria-selected="true">{{ y }}</a>
             {% else %}
                 <a class="nav-item nav-link" id="nav-{{ y }}-tab" data-toggle="pill" href="#nav-{{ y }}" role="tab" aria-controls="nav-{{ y }}" aria-selected="false">{{ y }}</a>
@@ -17,7 +17,7 @@
     </nav>
     <div class="tab-content" id="v-pills-tabContent">
         {% for y in object_list %}
-            {% if forloop.first %}
+            {% if y.year == currentYear %}
                 <div class="tab-pane fade show active" id="nav-{{ y }}" role="tabpanel" aria-labelledby="nav-{{ y }}-tab">
                     <div class="row">
                         {% for m in y.month_set.all %}
@@ -25,7 +25,7 @@
                                 <div class="card text-center">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ m }}</h5>
-                                        <a href="{% url "month" y.year m.month %}" class="btn btn-primary">{{ m.total_month }}</a>
+                                        <a href="{% url "month" y.year m.month %}" class="btn btn-primary">{{ m.total_month|intcomma }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                                 <div class="card text-center">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ m }}</h5>
-                                        <a href="{% url "month" y.year m.month %}" class="btn btn-primary">{{ m.total_month }}</a>
+                                        <a href="{% url "month" y.year m.month %}" class="btn btn-primary">{{ m.total_month|intcomma }}</a>
                                     </div>
                                 </div>
                             </div>

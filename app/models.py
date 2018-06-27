@@ -25,35 +25,36 @@ class Day(models.Model):
 
 
 
+
 class Month(models.Model):
     month = models.IntegerField()
     year = models.ForeignKey("Year", null=False, blank=False, on_delete=models.CASCADE)
 
     def __str__(self):
         if self.month == 1:
-            return "Janeiro"
+            return "January"
         if self.month == 2:
-            return "Fevereiro"
+            return "February"
         if self.month == 3:
-            return "Março"
+            return "March"
         if self.month == 4:
-            return "Abril"
+            return "April"
         if self.month == 5:
-            return "Maio"
+            return "May"
         if self.month == 6:
-            return "Junho"
+            return "June"
         if self.month == 7:
-            return "Julho"
+            return "July"
         if self.month == 8:
-            return "Agosto"
+            return "August"
         if self.month == 9:
-            return "Setembro"
+            return "September"
         if self.month == 10:
-            return "Outubro"
+            return "October"
         if self.month == 11:
-            return "Novembro"
+            return "November"
         if self.month == 12:
-            return "Dezembro"
+            return "December"
 
     def total_month(self):
         tot = self.day_set.all().aggregate(
@@ -83,19 +84,30 @@ class Year(models.Model):
 
 @receiver(post_save, sender=Month)
 def set_all_days_in_month(sender, instance:Month, **kwargs):
-    list = []
-    for i in range(31):
-        list.append(Day(day=(i+1,i+1), month=instance))
+    if instance.month == 2:
+        days = (Day(day=i + 1, month=instance) for i in range(29))
+    elif instance.month % 2 == 0:
+        days = (Day(day=i + 1, month=instance) for i in range(30))
+    else:
+        days = (Day(day=i + 1, month=instance) for i in range(31))
 
-    instance.day_set.bulk_create(list)
+    instance.day_set.bulk_create(days)
 
 @receiver(post_save, sender=Year)
 def set_all_months_in_year(sender, instance:Year, **kwargs):
     list = (Month(month=i+1, year=instance) for i in range(12))
     instance.month_set.bulk_create(list)
     list = instance.month_set.all()
+    count = 1
     for m in list:
-        m.day_set.bulk_create((Day(day=i+1, month=m) for i in range(31)))
+        if count==2:
+            days = (Day(day=i+1, month=m) for i in range(29))
+        elif count%2==0:
+            days = (Day(day=i+1, month=m) for i in range(30))
+        else:
+            days = (Day(day=i+1, month=m) for i in range(31))
+        m.day_set.bulk_create(days)
+        count+=1
 
 
 

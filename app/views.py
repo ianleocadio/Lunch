@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView,FormView
 from .models import Day, Month, Year
-from .form.forms import DayForm
+from .form.forms import DayFormView
+import datetime
 
 # Create your views here.
 
@@ -10,17 +11,33 @@ class YearList(ListView):
     model = Year
     template_name = "app/calendar.html"
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        now = datetime.datetime.now()
+        context['currentYear'] = now.year
+        return context
 
-class MonthView(ListView):
+class MonthView(DayFormView, ListView):
     model = Month
     template_name = "app/month.html"
 
     def get_queryset(self):
-        list = Month.objects.filter(year__year=self.kwargs['year'])
+        year = datetime.datetime.now().year
+        if "year" in self.kwargs:
+            year = self.kwargs['year']
+
+        list = Month.objects.filter(year__year=year)
         return list
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["activeMonth"] = self.kwargs["month"]
-        context['form'] = DayForm()
+        context["activeMonth"] = datetime.datetime.now().month
+        context["activeYear"] = datetime.datetime.now().year
+        if "month" in self.kwargs:
+            context["activeMonth"] = self.kwargs["month"]
+        if "year" in self.kwargs:
+            context["activeYear"] = self.kwargs['year']
+        #context['form'] = DayForm()
         return context
+
+

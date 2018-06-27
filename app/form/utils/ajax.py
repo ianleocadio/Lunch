@@ -1,4 +1,6 @@
 from django.http import JsonResponse
+from app.models import Day
+
 class AjaxableResponseMixin:
     """
     Mixin to add AJAX support to a form.
@@ -23,3 +25,15 @@ class AjaxableResponseMixin:
             return JsonResponse(data)
         else:
             return response
+
+
+class DayAjaxableResponseMixin(AjaxableResponseMixin):
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        day = self.kwargs["day"]
+        month = self.kwargs["month"]
+        year = self.kwargs["year"]
+        dayObject = Day.objects.get(day=day,month__month=month, month__year__year=year)
+        dayObject.spent = form.data['spent']
+        dayObject.save()
+        return response
