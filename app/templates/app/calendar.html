@@ -22,7 +22,7 @@
                     <div class="row">
                         {% for m in y.month_set.all %}
                             <div class="col-xs-6 col-sm-4 col-md-3">
-                                {% if activeMonth == m.month %}
+                                {% if activeMonth == m.month and y.year == activeYear %}
                                     <div class="card border-info text-center">
                                 {% else %}
                                     <div class="card text-center">
@@ -43,7 +43,7 @@
                     <div class="row">
                         {% for m in y.month_set.all %}
                             <div class="col-xs-6 col-sm-4 col-md-3">
-                                {% if activeMonth == m.month %}
+                                {% if activeMonth == m.month and y.year == activeYear %}
                                     <div class="card border-info text-center">
                                 {% else %}
                                     <div class="card text-center">

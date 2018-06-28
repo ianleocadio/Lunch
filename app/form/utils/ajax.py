@@ -51,7 +51,7 @@ class DayAjaxableResponseMixin:
                 data["validate"] = False
             print(response)
 
-            return JsonResponse(data=data, )
+            return JsonResponse(data=data)
         else:
             day = self.kwargs["day"]
             month = self.kwargs["month"]

@@ -1,12 +1,13 @@
-from django.shortcuts import render
-from django.views.generic import ListView,FormView
+from django.views.generic import ListView
 from .models import Day, Month, Year
 from .form.forms import DayFormView
 import datetime
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
-
+@method_decorator(login_required, name='dispatch')
 class YearList(ListView):
     model = Year
     template_name = "app/calendar.html"
@@ -18,6 +19,7 @@ class YearList(ListView):
         context["activeDay"] = datetime.datetime.now().day
         return context
 
+@method_decorator(login_required, name='dispatch')
 class MonthView(DayFormView, ListView):
     model = Month
     template_name = "app/month.html"
