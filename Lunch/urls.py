@@ -15,15 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from app.views import YearList, MonthView
+from app.views import YearView, MonthView
 
 urlpatterns = [
     path('', MonthView.as_view(), name="index"),
-    path('months_by_year/', YearList.as_view(), name="calendar"),
+
+    path('months_by_year/', YearView.as_view(), name="calendar"),
+    path('months_by_year/save/<int:year>/<int:month>', YearView.as_view(), name="setBalance"),
+
     path('days_by_month/<int:year>/<int:month>', MonthView.as_view(), name="month"),
     path('days_by_month/save/<int:year>/<int:month>/<int:day>', MonthView.as_view(), name="monthSave"),
     path('days_by_month/validate/<int:year>/<int:month>/<int:day>', MonthView.as_view(), name="validate_saldo"),
-    #path('day/save/<int:year>/<int:month>/<int:day>', ),
+
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS
     path('admin/', admin.site.urls),
 ]

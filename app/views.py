@@ -1,14 +1,15 @@
 from django.views.generic import ListView
 from .models import Day, Month, Year
-from .form.forms import DayFormView
+from .form.forms import DayFormView, MonthFormView
 import datetime
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect, JsonResponse
 
 # Create your views here.
 
 @method_decorator(login_required, name='dispatch')
-class YearList(ListView):
+class YearView(MonthFormView, ListView):
     model = Year
     template_name = "app/calendar.html"
 
@@ -19,10 +20,29 @@ class YearList(ListView):
         context["activeDay"] = datetime.datetime.now().day
         return context
 
+
+
+
+    def form_valid(self, form):
+        # Chama primeiro o FORM_VALID do MonthFormView
+        response = super().form_valid(form)
+        if isinstance(response, JsonResponse):
+            return response
+
+        month = self.kwargs["month"]
+        year = self.kwargs["year"]
+        monthObj = Month.objects.get(month=month, year__year=year)
+        monthObj.balance = float(form.data['balance'])
+        monthObj.save()
+
+        return HttpResponseRedirect('/months_by_year')
+
+
 @method_decorator(login_required, name='dispatch')
 class MonthView(DayFormView, ListView):
     model = Month
     template_name = "app/month.html"
+
 
     def get_queryset(self):
         year = datetime.datetime.now().year
@@ -44,8 +64,27 @@ class MonthView(DayFormView, ListView):
             context["activeMonth"] = self.kwargs["month"]
         if "year" in self.kwargs:
             context["activeYear"] = self.kwargs['year']
-        #context['form'] = DayForm()
+
+        context["is_mobile"] = self.request.user_agent.is_mobile
+
         return context
+
+    def form_valid(self, form):
+        # Chama primeiro o FORM_VALID do DayFormView
+        response = super().form_valid(form)
+
+        if isinstance(response, JsonResponse):
+            return response
+
+        day = self.kwargs["day"]
+        month = self.kwargs["month"]
+        year = self.kwargs["year"]
+        print(day, month, year)
+        dayObject = Day.objects.get(day=day, month__month=month, month__year__year=year)
+        dayObject.spent = abs(float(form.data['spent']))
+        dayObject.save()
+
+        return response
 
 
 

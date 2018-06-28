@@ -15,9 +15,21 @@
     <nav class="nav nav-tabs" id="YearTab" role="tablist">
         {% for m in object_list %}
             {% if m.month == activeMonth %}
-                <a class="nav-item nav-link active" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="vnav-{{ m }}" aria-selected="true">{{ m }}</a>
+                <a class="nav-item nav-link active" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="vnav-{{ m }}" aria-selected="true">
+                    {% if is_mobile %}
+                        {{ m.mini }}
+                    {% else %}
+                        {{ m }}
+                    {% endif %}
+                </a>
             {% else %}
-                <a class="nav-item nav-link" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="nav-{{ m }}" aria-selected="false">{{ m }}</a>
+                <a class="nav-item nav-link" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="nav-{{ m }}" aria-selected="false">
+                    {% if is_mobile %}
+                        {{ m.mini }}
+                    {% else %}
+                        {{ m }}
+                    {% endif %}
+                </a>
             {% endif %}
         {% endfor %}
     </nav>
@@ -27,19 +39,25 @@
                 <div class="tab-pane fade show active" id="nav-{{ m }}" role="tabpanel" aria-labelledby="nav-{{ m }}-tab">
                     <div class="row">
                         {% for d in m.day_set.all %}
-                            <div class="col-xs-6 col-sm-4 col-md-2">
+                            <div class="col-6 col-sm-6 col-md-4 col-lg-2 col-lx-1">
                                 {% if activeDay == d.day and m.month == activeMonth %}
                                     <div class="card border-info text-center">
                                 {% else %}
                                     <div class="card text-center">
                                 {% endif %}
                                     <div class="card-header">
-                                        <h5 class="">{{ d.day|ordinal }}</h5>
+                                        <h5 class="">{{ d.weekday }} {{ d.day|ordinal }}</h5>
                                     </div>
                                     <div class="card-body">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
-                                            R$: {{ d.spent|intcomma }}
-                                        </button>
+                                        {% if d.weekdayNumber == 5 or d.weekdayNumber == 6  %}
+                                            <button disabled type="button"  class="btn btn-dark" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        {% else %}
+                                            <button  type="button"  class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
+                                                R$: {{ d.spent|intcomma }}
+                                            </button>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -50,19 +68,25 @@
                 <div class="tab-pane fade" id="nav-{{ m }}" role="tabpanel" aria-labelledby="nav-{{ m }}-tab">
                     <div class="row">
                         {% for d in m.day_set.all %}
-                            <div class="col-xs-6 col-sm-4 col-md-2">
+                            <div class="col-6 col-sm-4 col-md-2">
                                 {% if activeDay == d.day and m.month == activeMonth %}
                                     <div class="card border-info text-center">
                                 {% else %}
                                     <div class="card text-center">
                                 {% endif %}
                                     <div class="card-header">
-                                        <h5 class="">{{ d.day|ordinal }}</h5>
+                                        <h5 class="">{{ d.weekday }} {{ d.day|ordinal }}</h5>
                                     </div>
                                     <div class="card-body">
-                                        <button type="button"  class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
+                                    {% if d.weekdayNumber == 5 or d.weekdayNumber == 6  %}
+                                        <button disabled type="button"  class="btn btn-dark" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    {% else %}
+                                        <button  type="button"  class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
                                             R$: {{ d.spent|intcomma }}
                                         </button>
+                                    {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +103,7 @@
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h2 class="modal-title text-center" id="">{{ m }} {{ d.day|ordinal }} </h2><br>
+                    <h2 class="modal-title text-center" id="">{{ d.weekday }} {{ m }} {{ d.day|ordinal }} </h2><br>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load humanize %}
 
 {% block title %} Calendar {% endblock %}
@@ -21,7 +22,7 @@
                 <div class="tab-pane fade show active" id="nav-{{ y }}" role="tabpanel" aria-labelledby="nav-{{ y }}-tab">
                     <div class="row">
                         {% for m in y.month_set.all %}
-                            <div class="col-xs-6 col-sm-4 col-md-3">
+                            <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                 {% if activeMonth == m.month and y.year == activeYear %}
                                     <div class="card border-info text-center">
                                 {% else %}
@@ -31,7 +32,10 @@
                                         <h5 class="">{{ m }}</h5>
                                     </div>
                                     <div class="card-body">
-                                        <a href="{% url "month" y.year m.month %}" class="btn btn-primary">{{ m.total_month|intcomma }}</a>
+                                        <button  type="button"  class="btn btn-outline-success" data-toggle="modal" data-target="#modal{{ y }}{{ m.month }}">
+                                            Balance:<br> R$ {{ m.balaceDep|intcomma }}
+                                        </button>
+                                        <a href="{% url "month" y.year m.month %}" class="btn btn-primary">Total Spent:<br> R$ {{ m.total_month|intcomma }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -42,7 +46,7 @@
                 <div class="tab-pane fade" id="nav-{{ y }}" role="tabpanel" aria-labelledby="nav-{{ y }}-tab">
                     <div class="row">
                         {% for m in y.month_set.all %}
-                            <div class="col-xs-6 col-sm-4 col-md-3">
+                            <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                                 {% if activeMonth == m.month and y.year == activeYear %}
                                     <div class="card border-info text-center">
                                 {% else %}
@@ -52,7 +56,10 @@
                                         <h5 class="">{{ m }}</h5>
                                     </div>
                                     <div class="card-body">
-                                        <a href="{% url "month" y.year m.month %}" class="btn btn-primary">{{ m.total_month|intcomma }}</a>
+                                        <button  type="button"  class="btn btn-outline-success" data-toggle="modal" data-target="#modal{{ y }}{{ m.month }}">
+                                            Balance:<br> R$ {{ m.balaceDep|intcomma }}
+                                        </button>
+                                        <a href="{% url "month" y.year m.month %}" class="btn btn-primary">Total Spent:<br> R$ {{ m.total_month|intcomma }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -62,7 +69,44 @@
             {% endif %}
         {% endfor %}
     </div>
+    {% for y in object_list %}
+        {% for m in y.month_set.all %}
+             <!-- Modal -->
+            <div class="modal fade" id="modal{{ y }}{{ m.month }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2 class="modal-title text-center" id="">{{ m }} {{ y }} </h2><br>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                    <form action="{% url 'setBalance' y.year m.month %}" method="POST">
+                        <div class="modal-body">
+                          {% csrf_token %}
+                          <div class="form-group">
+                              <label for="#id_balance{{ y }}{{ m.month }}">Balance setted: R$ {{ m.balance }}</label>
+                              <input type="number" name="balance" autofocus class="form-control form-control-lg" id="id_balance{{ y }}{{ m.month }}" onchange="" required />
+                          </div>
+                          <div class="form-group" id="errors{{ y }}{{ m.month }}">
+{#                            {% for e in errors.spent %}#}
+{#                                <div class="alert alert-primary" role="alert">#}
+{#                                  {{ e }}#}
+{#                                </div>#}
+{#                            {% endfor %}#}
+                          </div>
 
+                        </div>
+                          <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                          </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
 
 </div>
 
@@ -73,3 +117,6 @@
 
       </div>
 {% endblock %}
+{% block js %}
+    <script src="{% static 'app/js/year.js' %}"></script>
+{% endblock js %}

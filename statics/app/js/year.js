@@ -1,10 +1,10 @@
-function validate(d, m, y){
+function validate(m, y){
 
         $.ajax({
             type: "POST",
-            url: "/days_by_month/validate/"+y+"/"+m+"/"+d,
+            url: "/months_by_year/validate/"+y+"/"+m,
             data: {
-                "spent" : $("#id_spent"+m+d).val()
+                "balance" : $("#id_balance"+y+m).val()
             },
             dataType: 'json',
             beforeSend: function(xhr, settings) {
@@ -13,7 +13,7 @@ function validate(d, m, y){
               }
             },
             success: function (data) {
-              let elem =  $("#id_spent"+m+d);
+              let elem =  $("#id_balance"+y+m);
               if (!data.validate) {
                 if(elem.hasClass("is-valid"))
                     elem.removeClass("is-valid");
@@ -25,11 +25,11 @@ function validate(d, m, y){
 
                 elem.addClass("is-valid");
               }
-              let group = $("#errors"+m+d);
+              let group = $("#errors"+y+m);
               group.empty();
             },
             error: function (data) {
-              let elem =  $("#id_spent"+m+d);
+              let elem =  $("#id_balance"+y+m);
               if (!data.validate) {
                 if(elem.hasClass("is-valid"))
                     elem.removeClass("is-valid");
@@ -42,7 +42,7 @@ function validate(d, m, y){
                 elem.addClass("is-valid");
               }
               data = data.responseJSON;
-              let group = $("#errors"+m+d);
+              let group = $("#errors"+y+m);
               group.empty();
               for (i = 0; i < data.errors.spent.length; i++) {
                 let error = $(document.createElement("div"));

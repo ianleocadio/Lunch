@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     #Apps
     'app',
+
+    #Terceitos
+    'django_user_agents',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'Lunch.urls'
@@ -86,6 +90,11 @@ DATABASES = {
     'default': config('DATABASE_URL', default=default_dburl, cast=dburl),
 }
 
+# Cache backend is optional, but recommended to speed up user agent parsing
+
+# Name of cache backend to cache user agents. If it not specified default
+# cache alias will be used. Set to `None` to disable caching.
+USER_AGENTS_CACHE = 'default'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
