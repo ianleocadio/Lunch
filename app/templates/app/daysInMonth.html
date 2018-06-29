@@ -1,25 +1,28 @@
 {% load humanize %}
 
 
-<div class="col-6 col-sm-6 col-md-4 col-lg-2 col-lx-1">
-    {% if currentDay == d.day and m.month == currentMonth and m.year.year == currentYear %}
-        <div class="card border-info text-center">
-    {% else %}
-        <div class="card text-center">
-    {% endif %}
-        <div class="card-header">
-            <h5 class="">{{ d.weekday }} {{ d.day|ordinal }}</h5>
-        </div>
-        <div class="card-body">
-            {% if d.weekdayNumber == 5 or d.weekdayNumber == 6  %}
-                <button disabled type="button"  class="btn btn-dark" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            {% else %}
-                <button  type="button"  class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
-                    R$: {{ d.spent|intcomma }}
-                </button>
-            {% endif %}
-        </div>
-    </div>
-</div>
+
+{% for d in weekDisplayInMonth %}
+            <div class="col-6 col-sm-6 col-md-4 col-lg-2 col-lx-1" style="margin-bottom: 20px">
+                {% if currentDay == d.day and m.month == currentMonth and m.year.year == currentYear %}
+                    <div class="card border-info text-center text-white bg-secondary">
+                {% else %}
+                    <div class="card text-center text-white bg-secondary">
+                {% endif %}
+                    <div class="card-header">
+                        <h5 class="">{{ d.weekday }} {{ d.day|ordinal }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if d.weekdayNumber == 5 or d.weekdayNumber == 6  %}
+                            <button disabled type="button"  class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        {% else %}
+                            <button  type="button"  class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
+                                R$: {{ d.spent|intcomma }}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+{% endfor %}

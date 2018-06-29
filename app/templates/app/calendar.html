@@ -23,7 +23,7 @@
                         <div class="tab-pane fade show active " id="nav-{{ y }}" role="tabpanel" aria-labelledby="nav-{{ y }}-tab">
                             <div class="row">
                                 {% for m in y.month_set.all %}
-                                    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3" style="margin-bottom: 20px">
                                         {% if activeMonth == m.month and y.year == activeYear %}
                                             <div class="card border-info text-center">
                                         {% else %}
@@ -47,7 +47,7 @@
                         <div class="tab-pane fade" id="nav-{{ y }}" role="tabpanel" aria-labelledby="nav-{{ y }}-tab">
                             <div class="row">
                                 {% for m in y.month_set.all %}
-                                    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                                    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3" style="margin-bottom: 20px">
                                         {% if currentMonth == m.month and y.year == currentYear %}
                                             <div class="card border-info text-center">
                                         {% else %}

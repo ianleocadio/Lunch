@@ -14,65 +14,62 @@
             <h2><a href="{% url 'calendarWithYear' activeYear %}">{{ activeYear }}</a></h2>
         </div>
     </div>
-    <nav class="nav nav-tabs" id="YearTab" role="tablist">
+    <nav class="nav nav-tabs bg-primary" id="YearTab" role="tablist">
+    <div class="dropdown">
         {% for m in object_list %}
             {% if m.month == activeMonth %}
-                <a class="nav-item nav-link active" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="vnav-{{ m }}" aria-selected="true">
-                    {% if is_mobile %}
-                        {{ m.mini }}
-                    {% else %}
-                        {{ m }}
-                    {% endif %}
-                </a>
-            {% else %}
-                <a class="nav-item nav-link" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="nav-{{ m }}" aria-selected="false">
-                    {% if is_mobile %}
-                        {{ m.mini }}
-                    {% else %}
-                        {{ m }}
-                    {% endif %}
-                </a>
+                <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ m.mini }}
+                </button>
             {% endif %}
         {% endfor %}
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            {% for m in object_list %}
+                {% if m.month == activeMonth %}
+                    <button class="dropdown-item active" id="dropdown-item{{ m.month }}" type="button">{{ m }}</button>
+                {% else %}
+                    <button class="dropdown-item" id="dropdown-item{{ m.month }}" type="button">{{ m }}</button>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{#        {% for m in object_list %}#}
+{#            {% if m.month == activeMonth %}#}
+{#                <a class="nav-item nav-link active" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="vnav-{{ m }}" aria-selected="true">#}
+{#                    {% if is_mobile %}#}
+{#                        {{ m.mini }}#}
+{#                    {% else %}#}
+{#                        {{ m }}#}
+{#                    {% endif %}#}
+{#                </a>#}
+{#            {% else %}#}
+{#                <a class="nav-item nav-link" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="nav-{{ m }}" aria-selected="false">#}
+{#                    {% if is_mobile %}#}
+{#                        {{ m.mini }}#}
+{#                    {% else %}#}
+{#                        {{ m }}#}
+{#                    {% endif %}#}
+{#                </a>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
     </nav>
     <div class="tab-content" id="v-pills-tabContent">
         {% for m in object_list %}
             {% if m.month == activeMonth %}
                 <div class="tab-pane fade show active" id="nav-{{ m }}" role="tabpanel" aria-labelledby="nav-{{ m }}-tab">
-                    <div class="row">
+
 {#                        {% for d in m.day_set.all %}#}
-                            {% display_calendar m activeYear %}
+{#                            {% display_calendar m activeYear %}#}
+                            {% display_days m activeYear %}
 {#                        {% endfor %}#}
-                    </div>
+
                 </div>
              {% else %}
                 <div class="tab-pane fade" id="nav-{{ m }}" role="tabpanel" aria-labelledby="nav-{{ m }}-tab">
-                    <div class="row">
-                        {% for d in m.day_set.all %}
-                            <div class="col-6 col-sm-4 col-md-2">
-                                {% if currentDay == d.day and m.month == currentMonth and m.year.year == currentYear %}
-                                    <div class="card border-info text-center">
-                                {% else %}
-                                    <div class="card text-center">
-                                {% endif %}
-                                    <div class="card-header">
-                                        <h5 class="">{{ d.weekday }} {{ d.day|ordinal }}</h5>
-                                    </div>
-                                    <div class="card-body">
-                                    {% if d.weekdayNumber == 5 or d.weekdayNumber == 6  %}
-                                        <button disabled type="button"  class="btn btn-dark" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    {% else %}
-                                        <button  type="button"  class="btn btn-primary" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}">
-                                            R$: {{ d.spent|intcomma }}
-                                        </button>
-                                    {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
+
+{#                        {% display_calendar m activeYear %}#}
+                        {% display_days m activeYear %}
+
                 </div>
             {% endif %}
         {% endfor %}

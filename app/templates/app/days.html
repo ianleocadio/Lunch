@@ -1,0 +1,23 @@
+{% load humanize %}
+<div class="mb-5">
+    <div class="btn-group mr-2 w-100" role="group" aria-label="First group">
+        {% for siglaWeek in weekSiglas %}
+            <button type="button" class="btn btn-success w-100" style="padding: 8px 10px" disabled>{{ siglaWeek }}</button>
+        {% endfor %}
+    </div>
+    {% for week in weeksOnMonth %}
+        <div class="row">
+            <div class="col-12">
+                    <div class="btn-group mr-2 w-100" role="group" aria-label="First group">
+                        {% for d in week %}
+                            {% if d != 0 %}
+                                <button type="button" class="btn btn-primary  w-100" style="padding: 8px 10px" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}" >{{ d.day }}</button>
+                            {% else %}
+                                <button type="button" class="btn btn-outline-primary w-100" style="padding: 8px 10px" disabled></button>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
