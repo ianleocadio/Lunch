@@ -1,7 +1,7 @@
 from django.views.generic import ListView
 from .models import Day, Month, Year
 from .form.forms import DayFormView, MonthFormView
-import datetime
+import datetime, calendar
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import HttpResponseRedirect, JsonResponse
@@ -15,9 +15,16 @@ class YearView(MonthFormView, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["activeMonth"] = datetime.datetime.now().month
         context["activeYear"] = datetime.datetime.now().year
-        context["activeDay"] = datetime.datetime.now().day
+        context["activeMonth"] = datetime.datetime.now().month
+
+        context["currentMonth"] = datetime.datetime.now().month
+        context["currentYear"] = datetime.datetime.now().year
+        context["currentDay"] = datetime.datetime.now().day
+
+        if "year" in self.kwargs:
+            context["activeYear"] = self.kwargs['year']
+
         return context
 
 
@@ -32,7 +39,7 @@ class YearView(MonthFormView, ListView):
         month = self.kwargs["month"]
         year = self.kwargs["year"]
         monthObj = Month.objects.get(month=month, year__year=year)
-        monthObj.balance = float(form.data['balance'])
+        monthObj.balance = round(float(form.data['balance']), 2)
         monthObj.save()
 
         return HttpResponseRedirect('/months_by_year')
@@ -57,13 +64,17 @@ class MonthView(DayFormView, ListView):
             self.object_list = self.model.objects.filter(year__year=self.kwargs['year'])
 
         context = super().get_context_data(object_list=self.object_list,**kwargs)
-        context["activeMonth"] = datetime.datetime.now().month
         context["activeYear"] = datetime.datetime.now().year
-        context["activeDay"] = datetime.datetime.now().day
+        context["activeMonth"] = datetime.datetime.now().month
+
+        context["currentMonth"] = datetime.datetime.now().month
+        context["currentYear"] = datetime.datetime.now().year
+        context["currentDay"] = datetime.datetime.now().day
         if "month" in self.kwargs:
             context["activeMonth"] = self.kwargs["month"]
         if "year" in self.kwargs:
             context["activeYear"] = self.kwargs['year']
+
 
         context["is_mobile"] = self.request.user_agent.is_mobile
 
@@ -79,9 +90,8 @@ class MonthView(DayFormView, ListView):
         day = self.kwargs["day"]
         month = self.kwargs["month"]
         year = self.kwargs["year"]
-        print(day, month, year)
         dayObject = Day.objects.get(day=day, month__month=month, month__year__year=year)
-        dayObject.spent = abs(float(form.data['spent']))
+        dayObject.spent = round(abs(float(form.data['spent'])), 2)
         dayObject.save()
 
         return response

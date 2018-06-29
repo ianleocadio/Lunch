@@ -116,7 +116,7 @@ class Month(models.Model):
         tot = self.day_set.all().aggregate(
             tot_ped=Sum(F('spent'), output_field=FloatField())
         )['tot_ped'] or 0.0
-        return tot
+        return round(tot,2)
     total_month.short_description = "Total Spent"
 
     totalLunch = property(total_month)
@@ -129,8 +129,8 @@ class Month(models.Model):
         bMonthsBalance = self.year.month_set.filter(month__lte=self.month, year__year=self.year.year).aggregate(
             bMonths=Sum(F('balance'), output_field=FloatField())
         )['bMonths'] or 0.0
-        print(bMonthsBalance)
-        return bMonthsBalance - bMonthSpent
+
+        return round(bMonthsBalance - bMonthSpent,2)
 
 class Year(models.Model):
     year = models.IntegerField()
@@ -142,7 +142,7 @@ class Year(models.Model):
         tot = self.month_set.all().aggregate(
             tot_ped=Sum(F("day__spent"), output_field=FloatField())
         )['tot_ped'] or 0.0
-        return tot
+        return round(tot,2)
 
     total_year.short_description = "Total Spent"
     totalLunch = property(total_year)
@@ -151,8 +151,9 @@ class Year(models.Model):
 
 @receiver(post_save, sender=Month)
 def set_all_days_in_month(sender, instance:Month, **kwargs):
+    monthObj = Month.objects.get(month=instance.month, year__year=instance.year.year)
 
-    if Month.objects.get(month=instance):
+    if monthObj.day_set.count() != 0:
         return
 
     r = calendar.monthrange(instance.year.year, instance.month)[1]
@@ -163,7 +164,9 @@ def set_all_days_in_month(sender, instance:Month, **kwargs):
 @receiver(post_save, sender=Year)
 def set_all_months_in_year(sender, instance:Year, **kwargs):
 
-    if Year.objects.get(year=instance):
+    yearObj = Year.objects.get(year=instance.year)
+
+    if yearObj.month_set.count() != 0:
         return
 
     list = (Month(month=i+1, year=instance) for i in range(12))

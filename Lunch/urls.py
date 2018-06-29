@@ -21,6 +21,7 @@ urlpatterns = [
     path('', MonthView.as_view(), name="index"),
 
     path('months_by_year/', YearView.as_view(), name="calendar"),
+    path('months_by_year/<int:year>', YearView.as_view(), name="calendarWithYear"),
     path('months_by_year/save/<int:year>/<int:month>', YearView.as_view(), name="setBalance"),
 
     path('days_by_month/<int:year>/<int:month>', MonthView.as_view(), name="month"),
