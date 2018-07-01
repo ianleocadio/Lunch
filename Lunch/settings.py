@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     #Apps
     'app',
-
+    'user',
     #Terceitos
     'django_user_agents',
 ]
@@ -136,7 +136,9 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = 'media'
 
-LOGIN_URL = '/admin/login'
+LOGIN_URL = 'login'
+
+LOGOUT_REDIRECT_URL = 'login'
 
 LOGIN_REDIRECT_URL = 'index'
 
