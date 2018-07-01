@@ -11,9 +11,9 @@
                     <div class="btn-group mr-2 w-100" role="group" aria-label="First group">
                         {% for d in week %}
                             {% if d != 0 %}
-                                <button type="button" class="btn btn-primary  w-100" style="padding: 8px 10px" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}" >{{ d.day }}</button>
+                                <button type="button" class="btn {{ d.getDayCssClass }}  w-100" style="padding: 8px 10px" data-toggle="modal" data-target="#modal{{ m }}{{ d.day }}" >{{ d.day }}</button>
                             {% else %}
-                                <button type="button" class="btn btn-outline-primary w-100" style="padding: 8px 10px" disabled></button>
+                                <button type="button" class="btn btn-primary w-100" style="padding: 8px 10px" disabled></button>
                             {% endif %}
                         {% endfor %}
                     </div>

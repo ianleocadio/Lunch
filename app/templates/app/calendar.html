@@ -8,7 +8,7 @@
 <div class="container-fluid">
     <div class="row ">
         <div id="calendar" class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-9" style="transition-duration: .5s">
-            <nav class="nav nav-tabs" id="YearTab" role="tablist">
+            <nav class="nav nav-tabs " id="YearTab" role="tablist">
                 {% for y in object_list %}
                     {% if y.year == activeYear %}
                         <a class="nav-item nav-link active" id="nav-{{ y }}-tab" data-toggle="pill" href="#nav-{{ y }}" role="tab" aria-controls="vnav-{{ y }}" aria-selected="true">{{ y }}</a>
@@ -24,46 +24,56 @@
                             <div class="row">
                                 {% for m in y.month_set.all %}
                                     <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3" style="margin-bottom: 20px">
-                                        {% if activeMonth == m.month and y.year == activeYear %}
-                                            <div class="card border-info text-center">
+                                        {% if currentMonth == m.month and y.year == currentYear %}
+                                          <div class="card text-center border-white bg-primary">
+                                            <div class="card-header border-white text-white">
                                         {% else %}
-                                            <div class="card text-center">
+                                          <div class="card text-center">
+                                            <div class="card-header border-primary">
                                         {% endif %}
-                                            <div class="card-header">
                                                 <h5 class="">{{ m }}</h5>
                                             </div>
                                             <div class="card-body">
-                                                <button  type="button"  class="btn btn-outline-success" data-toggle="modal" data-target="#modal{{ y }}{{ m.month }}">
+                                                <button  type="button"  class="btn btn-success" data-toggle="modal" data-target="#modal{{ y }}{{ m.month }}">
                                                     Balance:<br> R$ {{ m.balaceDep|intcomma }}
                                                 </button>
-                                                <a href="{% url "month" y.year m.month %}" class="btn btn-primary">Total Spent:<br> R$ {{ m.total_month|intcomma }}</a>
+                                                {% if currentMonth == m.month and y.year == currentYear %}
+                                                    <a href="{% url "month" y.year m.month %}" class="btn btn-outline-light">Total Spent:<br> R$ {{ m.total_month|intcomma }}</a>
+                                                {% else %}
+                                                    <a href="{% url "month" y.year m.month %}" class="btn btn-primary">Total Spent:<br> R$ {{ m.total_month|intcomma }}</a>
+                                                {% endif %}
                                             </div>
                                         </div>
-                                    </div>
+                                      </div>
                                 {% endfor %}
                             </div>
                         </div>
                      {% else %}
-                        <div class="tab-pane fade" id="nav-{{ y }}" role="tabpanel" aria-labelledby="nav-{{ y }}-tab">
+                        <div class="tab-pane fade show active " id="nav-{{ y }}" role="tabpanel" aria-labelledby="nav-{{ y }}-tab">
                             <div class="row">
                                 {% for m in y.month_set.all %}
                                     <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3" style="margin-bottom: 20px">
                                         {% if currentMonth == m.month and y.year == currentYear %}
-                                            <div class="card border-info text-center">
+                                          <div class="card text-center border-white bg-primary">
+                                            <div class="card-header border-white text-white">
                                         {% else %}
-                                            <div class="card text-center">
+                                          <div class="card text-center">
+                                            <div class="card-header border-primary">
                                         {% endif %}
-                                            <div class="card-header">
                                                 <h5 class="">{{ m }}</h5>
                                             </div>
                                             <div class="card-body">
-                                                <button  type="button"  class="btn btn-outline-success" data-toggle="modal" data-target="#modal{{ y }}{{ m.month }}">
+                                                <button  type="button"  class="btn btn-success" data-toggle="modal" data-target="#modal{{ y }}{{ m.month }}">
                                                     Balance:<br> R$ {{ m.balaceDep|intcomma }}
                                                 </button>
-                                                <a href="{% url "month" y.year m.month %}" class="btn btn-primary">Total Spent:<br> R$ {{ m.total_month|intcomma }}</a>
+                                                {% if currentMonth == m.month and y.year == currentYear %}
+                                                    <a href="{% url "month" y.year m.month %}" class="btn btn-outline-light">Total Spent:<br> R$ {{ m.total_month|intcomma }}</a>
+                                                {% else %}
+                                                    <a href="{% url "month" y.year m.month %}" class="btn btn-primary">Total Spent:<br> R$ {{ m.total_month|intcomma }}</a>
+                                                {% endif %}
                                             </div>
                                         </div>
-                                    </div>
+                                      </div>
                                 {% endfor %}
                             </div>
                         </div>
@@ -110,60 +120,77 @@
             {% endfor %}
         </div>
         <div id="actions" class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3" style="transition-duration: .0s; margin-top: 38px">
-            <div class="card">
-                <div class="align-self-end position-absolute">
-                    <button id="arrow-icon-button" class="btn btn-outline-info" onclick="minimizeActions()">
-                        <i id="arrow-icon" class="fas fa-chevron-down" style="transition-duration: 0.7s"></i>
-                    </button>
-                </div>
-                <div class="card-header text-center">
-                    <h5 class="text-info"> Actions </h5>
-                </div>
-                <button class="btn btn-outline-success" data-toggle="modal" data-target="#balanceModal">
-                    Add balance to all months
-                </button>
-                <button class="btn btn-outline-info" data-toggle="modal" data-target="#balanceModal">
-                    Update balance to all months
-                </button>
-                <button class="btn btn-outline-danger" data-toggle="modal" data-target="#balanceModal">
-                    Remove balance of all months
-                </button>
-            </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="balanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h2 class="modal-title text-center" id="">Add balance to all months</h2><br>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-                <form action="" method="POST">
-                    <div class="modal-body">
-                      {% csrf_token %}
-                      <div class="form-group">
-                          <label for="#id_balance">Balance setted: R$ </label>
-                          <input type="number" name="balance" autofocus class="form-control form-control-lg" id="id_balance" onchange="" required />
-                      </div>
-                      <div class="form-group" id="errors">
-{#                            {% for e in errors.spent %}#}
-{#                                <div class="alert alert-primary" role="alert">#}
-{#                                  {{ e }}#}
-{#                                </div>#}
-{#                            {% endfor %}#}
-                      </div>
-
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="align-self-end position-absolute">
+                            <button id="arrow-icon-button" class="btn btn-outline-info" onclick="minimizeActions()">
+                                <i id="arrow-icon" class="fas fa-chevron-down" style="transition-duration: 0.7s"></i>
+                            </button>
+                        </div>
+                        <div class="card-header text-center">
+                            <h5 class="text-info"> Actions </h5>
+                        </div>
+                        <button class="btn btn-success" data-toggle="modal" data-target="#balanceModal">
+                            Add balance to all months
+                        </button>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#balanceModal">
+                            Update balance to all months
+                        </button>
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#balanceModal">
+                            Remove balance of all months
+                        </button>
                     </div>
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Save</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                      </div>
-                </form>
+                </div>
+                {% if user.is_staff %}
+                <div class="col-12 mt-2">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h5 class="text-info"> Admin </h5>
+                        </div>
+                        <button class="btn btn-success" data-toggle="modal" data-target="#balanceModal">
+                            Add new year
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-          </div>
+            <!-- Modal -->
+            <div class="modal fade" id="balanceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2 class="modal-title text-center" id="">Add balance to all months</h2><br>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                    <form action="" method="POST">
+                        <div class="modal-body">
+                          {% csrf_token %}
+                          <div class="form-group">
+                              <label for="#id_balance">Balance setted: R$ </label>
+                              <input type="number" name="balance" autofocus class="form-control form-control-lg" id="id_balance" onchange="" required />
+                          </div>
+                          <div class="form-group" id="errors">
+    {#                            {% for e in errors.spent %}#}
+    {#                                <div class="alert alert-primary" role="alert">#}
+    {#                                  {{ e }}#}
+    {#                                </div>#}
+    {#                            {% endfor %}#}
+                          </div>
+
+                        </div>
+                          <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                          </div>
+                    </form>
+                </div>
+              </div>
+            </div>
         </div>
+
     </div>
 </div>
 <div class="container">

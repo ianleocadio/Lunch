@@ -1,5 +1,5 @@
 from django.db import models
-import calendar
+import calendar, datetime
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db.models import Sum, F, FloatField
@@ -51,6 +51,18 @@ class Day(models.Model):
             return calendar.weekday(self.year.year, self.month.month, self.day)
         except ValueError:
             return ""
+
+    @property
+    def getDayCssClass(self):
+        year = datetime.datetime.now().year
+        month = datetime.datetime.now().month
+        day = datetime.datetime.now().day
+        if self.day == day and self.month.month == month and self.month.year.year == year:
+            return "btn-outline-info"
+        elif self.spent:
+            return "btn-outline-danger"
+        else:
+            return "btn-primary"
 
 
 

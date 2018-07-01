@@ -11,52 +11,35 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-xs-12 ">
-            <h2><a href="{% url 'calendarWithYear' activeYear %}">{{ activeYear }}</a></h2>
+            <h2 class="pt-3"><a href="{% url 'calendarWithYear' activeYear %}">{{ activeYear }}</a></h2>
         </div>
     </div>
-    <nav class="nav nav-tabs bg-primary" id="YearTab" role="tablist">
+    <nav class="nav nav-tabs justify-content-end" id="YearTab" role="tablist">
     <div class="dropdown">
         {% for m in object_list %}
             {% if m.month == activeMonth %}
-                <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-outline-light dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ m.mini }}
                 </button>
             {% endif %}
         {% endfor %}
-        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu">
+            <h6 class="dropdown-header">Months</h6>
+            <div class="dropdown-divider"></div>
             {% for m in object_list %}
                 {% if m.month == activeMonth %}
-                    <button class="dropdown-item active" id="dropdown-item{{ m.month }}" type="button">{{ m }}</button>
+                    <a class="dropdown-item active" id="dropdown-item{{ m.month }}" onclick="selectMonth({{ m.month }}, '{{ m.mini }}')" data-toggle="tab" href="#nav-{{ m.month }}" role="tab" aria-controls="nav-{{ m.month }}" aria-selected="true">{{ m }}</a>
                 {% else %}
-                    <button class="dropdown-item" id="dropdown-item{{ m.month }}" type="button">{{ m }}</button>
+                    <a class="dropdown-item" id="dropdown-item{{ m.month }}" onclick="selectMonth({{ m.month }}, '{{ m.mini }}')" data-toggle="tab" href="#nav-{{ m.month }}" role="tab" aria-controls="nav-{{ m.month }}" aria-selected="false">{{ m }}</a>
                 {% endif %}
             {% endfor %}
         </div>
     </div>
-{#        {% for m in object_list %}#}
-{#            {% if m.month == activeMonth %}#}
-{#                <a class="nav-item nav-link active" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="vnav-{{ m }}" aria-selected="true">#}
-{#                    {% if is_mobile %}#}
-{#                        {{ m.mini }}#}
-{#                    {% else %}#}
-{#                        {{ m }}#}
-{#                    {% endif %}#}
-{#                </a>#}
-{#            {% else %}#}
-{#                <a class="nav-item nav-link" id="nav-{{ m }}-tab" data-toggle="pill" href="#nav-{{ m }}" role="tab" aria-controls="nav-{{ m }}" aria-selected="false">#}
-{#                    {% if is_mobile %}#}
-{#                        {{ m.mini }}#}
-{#                    {% else %}#}
-{#                        {{ m }}#}
-{#                    {% endif %}#}
-{#                </a>#}
-{#            {% endif %}#}
-{#        {% endfor %}#}
     </nav>
-    <div class="tab-content" id="v-pills-tabContent">
+    <div class="tab-content">
         {% for m in object_list %}
             {% if m.month == activeMonth %}
-                <div class="tab-pane fade show active" id="nav-{{ m }}" role="tabpanel" aria-labelledby="nav-{{ m }}-tab">
+                <div class="tab-pane fade show active" id="nav-{{ m.month }}" role="tabpanel" aria-labelledby="dropdown-item{{ m.month }}" style="transition-duration: 0.5s">
 
 {#                        {% for d in m.day_set.all %}#}
 {#                            {% display_calendar m activeYear %}#}
@@ -65,7 +48,7 @@
 
                 </div>
              {% else %}
-                <div class="tab-pane fade" id="nav-{{ m }}" role="tabpanel" aria-labelledby="nav-{{ m }}-tab">
+                <div class="tab-pane fade" id="nav-{{ m.month }}" role="tabpanel" aria-labelledby="dropdown-item{{ m.month }}" style="transition-duration: 0.5s">
 
 {#                        {% display_calendar m activeYear %}#}
                         {% display_days m activeYear %}
@@ -79,7 +62,7 @@
             <!-- Modal -->
             <div class="modal fade" id="modal{{ m }}{{ d.day }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
+                <div class="modal-content text-white bg-primary">
                   <div class="modal-header">
                     <h2 class="modal-title text-center" id="">{{ d.weekday }} {{ m }} {{ d.day|ordinal }} </h2><br>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -91,7 +74,7 @@
                           {% csrf_token %}
                           <div class="form-group">
                               <label for="#id_spent{{ m.month }}{{ d }}">Spent</label>
-                              <input type="text" name="spent" autofocus class="form-control form-control-lg" id="id_spent{{ m.month }}{{ d }}" onchange="validate({{ d }}, {{ m.month }}, {{ activeYear }})" required />
+                              <input type="text" name="spent" placeholder="{{ d.spent }}" autofocus class="form-control form-control-lg" id="id_spent{{ m.month }}{{ d }}" onchange="validate({{ d }}, {{ m.month }}, {{ activeYear }})" required />
                           </div>
                           <div class="form-group" id="errors{{ m.month }}{{ d }}">
                           {{ errors }}

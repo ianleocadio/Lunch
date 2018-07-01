@@ -18,21 +18,23 @@ def display_calendar(context, month:Month, year):
 
 @register.inclusion_tag(get_template('app/days.html'), takes_context=True)
 def display_days(context, month:Month, year):
-
-    weekDisplayInMonth = calendar.monthcalendar(month=month.month, year=year)
+    cal = calendar.Calendar(firstweekday=6)
+    weekDisplayInMonth = cal.monthdays2calendar(month=month.month, year=year)
     days = month.day_set.all()
     lis = []
+
     for i,week in enumerate(weekDisplayInMonth):
         lis.append([])
-        for d in week:
+        for d, weekDay in week:
             if d != 0:
                 d = days.get(day=d)
             lis[i].append(d)
 
 
 
+
     context["weeksOnMonth"] = lis
-    context["weekSiglas"] = ["M", "T", "W", "T", "F", "S", "S"]
+    context["weekSiglas"] = ["S", "M", "T", "W", "T", "F", "S"]
 
     #seg, ter, qua, qui, sex, sab, dom
 

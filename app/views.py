@@ -75,7 +75,6 @@ class MonthView(DayFormView, ListView):
         if "year" in self.kwargs:
             context["activeYear"] = self.kwargs['year']
 
-
         context["is_mobile"] = self.request.user_agent.is_mobile
 
         return context
