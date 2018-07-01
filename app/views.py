@@ -29,22 +29,6 @@ class YearView(MonthFormView, ListView):
 
 
 
-
-    def form_valid(self, form):
-        # Chama primeiro o FORM_VALID do MonthFormView
-        response = super().form_valid(form)
-        if isinstance(response, JsonResponse):
-            return response
-
-        month = self.kwargs["month"]
-        year = self.kwargs["year"]
-        monthObj = Month.objects.get(month=month, year__year=year)
-        monthObj.balance = round(float(form.data['balance']), 2)
-        monthObj.save()
-
-        return HttpResponseRedirect('/months_by_year')
-
-
 @method_decorator(login_required, name='dispatch')
 class MonthView(DayFormView, ListView):
     model = Month
@@ -79,21 +63,7 @@ class MonthView(DayFormView, ListView):
 
         return context
 
-    def form_valid(self, form):
-        # Chama primeiro o FORM_VALID do DayFormView
-        response = super().form_valid(form)
 
-        if isinstance(response, JsonResponse):
-            return response
-
-        day = self.kwargs["day"]
-        month = self.kwargs["month"]
-        year = self.kwargs["year"]
-        dayObject = Day.objects.get(day=day, month__month=month, month__year__year=year)
-        dayObject.spent = round(abs(float(form.data['spent'])), 2)
-        dayObject.save()
-
-        return response
 
 
 
