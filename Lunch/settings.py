@@ -29,6 +29,12 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['localhost', '.herokuapp.com', '192.168.1.35', "192.168.0.152"]
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+
 
 # Application definition
 
@@ -46,9 +52,11 @@ INSTALLED_APPS = [
     'user',
     #Terceitos
     'django_user_agents',
+    #'djangosecure',
 ]
 
 MIDDLEWARE = [
+    #'djangosecure.middleware.SecurityMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,6 +68,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Lunch.urls'
+
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
+#SECURE_HSTS_SECONDS = 31536000
+#SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 TEMPLATES = [
     {

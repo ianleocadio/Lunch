@@ -28,7 +28,7 @@ urlpatterns = [
     path('days_by_month/save/<int:year>/<int:month>/<int:day>', MonthView.as_view(), name="monthSave"),
     path('days_by_month/validate/<int:year>/<int:month>/<int:day>', MonthView.as_view(), name="validate_saldo"),
 
-    path('accounts/', include('user.urls')),
+    path('', include('user.urls')),
 
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS
     path('admin/', admin.site.urls),

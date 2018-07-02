@@ -56,3 +56,32 @@ function validate(d, m, y){
             }
         });
 }
+
+
+function selectMonth(m, mini){
+    let dropdown_item = $("#dropdown-item"+m);
+    let dropdownMenu = $("#dropdownMenu");
+    let elem, tab;
+
+    dropdown_item.parent()[0].childNodes.forEach(function(e, c){
+        e = $(e);
+        if (e.hasClass("active"))
+            elem = e;
+    });
+    //console.log(dropdownMenu);
+    dropdownMenu.text(mini);
+
+    elem.removeClass("active");
+    dropdown_item.toggleClass("active");
+    //console.log(dropdown_item);
+    let nav = $("#nav-"+m);
+    nav.parent()[0].childNodes.forEach(function(e, c){
+        e = $(e);
+        if (e.hasClass("active"))
+            tab = e;
+    });
+    tab.removeClass("show active");
+    nav.addClass("show active");
+
+
+}

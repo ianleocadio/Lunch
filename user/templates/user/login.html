@@ -1,36 +1,40 @@
+{% extends 'baseLogin.html' %}
 {% load static %}
 
-<!doctype html>
-<html lang="pt-br" class="h-100">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">#}
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
-{#    <link rel="stylesheet" href="{% static 'app/css/app.css' %}">#}
-
-    <title>{% block title %}{% endblock %}</title>
-</head>
-<body class="container h-100 bg-primary">
+{% block main %}
     <div class="row h-100">
         <form class="col-10 col-sm-10 col-md-8 col-lg-6 m-auto" method="post" action="{% url 'login' %}" >
             {% csrf_token %}
             <h3 class="text-center font-italic text-white">Sign in to Calendar</h3>
             <div class="jumbotron bg-dark " style="padding: 1rem 2rem; border-radius: 5px">
+              <div class="form-group row" id="errors">
+              {% if form.non_field_errors %}
+                  <div class="alert alert-danger userErrorAlert" role="alert">
+                   {{ form.non_field_errors }}
+                  </div>
+              {% endif %}
+              </div>
               <div class="form-group row" >
                 <label for="userInput" class="col-12">Username</label>
                 <div class="col-sm-12">
-                  <input type="text" name="username" class="form-control form-control-lg" id="userInput" >
+                  <input type="text" name="username" class="form-control form-control-lg" id="userInput" onchange="validateUser()">
+                    {% if form.username.errors %}
+                    <div class="alert alert-danger userErrorAlert" id="userInputErrors" role="alert">
+                          {{ form.username.errors }}
+                    </div>
+                    {% endif %}
                 </div>
               </div>
               <div class="form-group row">
-                <label for="userInput" class="col-3 text-left">Password</label>
-                <a href="" class="col-9 text-white text-right" style="text-decoration: underline">Forgot password?</a>
+                <label for="passInput" class="col-3 text-left">Password</label>
+                <a href="{% url 'password_reset' %}" class="col-9 text-white text-right" style="text-decoration: underline">Forgot password?</a>
                 <div class="col-sm-12">
-                  <input type="password" name="password" class="form-control form-control-lg" id="inputPassword" >
+                  <input type="password" name="password" class="form-control form-control-lg" id="passInput" onchange="validatePass()" >
+                    {% if form.password.errors %}
+                    <div class="alert alert-danger userErrorAlert" id="passwordInputErrors" role="alert">
+                          {{ form.password.errors }}
+                    </div>
+                    {% endif %}
                 </div>
               </div>
               <div class="form-group row">
@@ -41,17 +45,7 @@
             </div>
         </form>
     </div>
-    <footer class="footer">
-        {% block footer %}
-        {% endblock %}
-
-    </footer>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="{% static 'app/js/utils.js' %}"></script>
-    {% block js %}{% endblock %}
-</body>
-
-
-</html>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'user/js/user.js' %}"></script>
+{% endblock %}
